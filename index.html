@@ -1,0 +1,878 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Elisiane Pokam - Personal Brand</title>
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
+    
+    <!-- Dependencies -->
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://unpkg.com/framer-motion@10.16.4/dist/framer-motion.js"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            light: '#F5F3FF',
+                            DEFAULT: '#7C3AED',
+                            dark: '#4C1D95',
+                        },
+                        gold: {
+                            DEFAULT: '#D97706',
+                            hover: '#B45309',
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        serif: ['Playfair Display', 'serif'],
+                    },
+                    animation: {
+                        'fade-in': 'fadeIn 1s ease-out forwards',
+                    },
+                    keyframes: {
+                        fadeIn: {
+                            '0%': { opacity: '0', transform: 'translateY(10px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        html { scroll-behavior: smooth; }
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #f1f1f1; }
+        ::-webkit-scrollbar-thumb { background: #7C3AED; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: #4C1D95; }
+        
+        .preserve-3d { transform-style: preserve-3d; }
+        .rotate-y-20 { transform: rotateY(-20deg); }
+        
+        .glass-nav {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+        }
+    </style>
+</head>
+<body class="bg-white text-slate-900 font-sans">
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect, useRef } = React;
+        const Motion = window.Motion || window.FramerMotion || {};
+        const { motion, AnimatePresence } = Motion;
+
+        // Configuration
+        const CONFIG = {
+          WHATSAPP_NUMBER: '656502908',
+          WHATSAPP_LINK: `https://wa.me/237656502908`,
+          IMAGES: {
+              hero: 'https://i.imgur.com/t0cvY0h.png',
+              about: 'https://i.imgur.com/p3gVkqq.png',
+              book: 'https://i.imgur.com/nbIRT5h.png',
+              soap: 'https://images.unsplash.com/photo-1584622650111-993a426fbf0a?q=80&w=2070&auto=format&fit=crop',
+              events: 'https://images.unsplash.com/photo-1511795409834-ef04bbd61622?q=80&w=2069&auto=format&fit=crop',
+              beauty: 'https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?q=80&w=2070&auto=format&fit=crop',
+              fashion: 'https://images.unsplash.com/photo-1532453288454-ba3650672b11?q=80&w=1965&auto=format&fit=crop'
+          }
+        };
+
+        // Content
+        const contentData = {
+          en: {
+            nav: {
+              home: 'Home',
+              about: 'About',
+              book: 'My Book',
+              cv: 'Profile',
+              services: 'Services',
+              gallery: 'Gallery',
+              contact: 'Contact'
+            },
+            hero: {
+              name: 'Elisiane Pokam',
+              tagline: 'Empowering lives through leadership, consulting, and quality services',
+              subtext: 'Multi-service entrepreneur offering professional cleaning products, luxury event services, and handmade fashion items.',
+              cta: 'Contact me on WhatsApp'
+            },
+            about: {
+              title: 'Inspiring Change Through Leadership & Service',
+              story: 'Driven by a passion for creating solutions, I am an entrepreneur dedicated to excellence. My journey is built on the pillars of leadership, integrity, and a deep-seated desire to help others grow while providing high-quality products and services across multiple sectors.',
+              values: {
+                title: 'My Core Values',
+                items: [
+                  { title: 'Excellence', desc: 'Committed to delivering nothing but the best in every venture.' },
+                  { title: 'Leadership', desc: 'Dedicated to empowering individuals and fostering team growth.' },
+                  { title: 'Integrity', desc: 'Operating with transparency and honor in all business dealings.' },
+                  { title: 'Service', desc: 'Creating meaningful impact through dedicated service to clients.' }
+                ]
+              }
+            },
+            book: {
+              title: "L'Attitude dans l'attente",
+              subtitle: "The Power of Your Mindset while Waiting",
+              description: "A profound exploration of how our perspective and internal state during periods of waiting can define our eventual success and personal growth.",
+              author: "Elisiane Pokam",
+              price: "2500 FCFA",
+              cta: 'Get the Book on WhatsApp'
+            },
+            cv: {
+              title: 'Professional Profile',
+              summary: 'Dynamic multi-sector entrepreneur and leadership specialist with over a decade of experience in business management and community service.',
+              skills: ['Leadership', 'Event Planning', 'Chemical Production', 'Public Speaking', 'Financial Management'],
+              education: [
+                { period: '2015 - 2017', degree: 'Master in Project Management', school: 'University of Yaoundé' },
+                { period: '2011 - 2014', degree: 'BSc in Economics', school: 'University of Douala' }
+              ],
+              experience: [
+                {
+                  period: '2018 - Present',
+                  role: 'CEO & Founder',
+                  company: 'Zoe Brands Cameroon',
+                  desc: ['Managing multiple business units: Zoe Clean, Zoe Events, and Zoe Beauty.', 'Lead a team of 15+ employees across production and service sectors.']
+                },
+                {
+                  period: '2020 - Present',
+                  role: 'Author & Speaker',
+                  company: 'Personal Brand',
+                  desc: ['Published "L\'Attitude dans l\'attente".', 'Conducted leadership workshops for young entrepreneurs.']
+                }
+              ]
+            },
+            services: {
+              title: 'My Business Activities',
+              categories: [
+                {
+                  id: 'zoe-clean',
+                  title: 'Zoe Clean',
+                  description: 'Premium liquid soap and cleaning solutions for households and industrial use.',
+                  highlight: 'High Concentration Formula',
+                  benefits: ['Effective Cleaning', 'Budget Friendly', 'Eco-conscious'],
+                  cta: 'Order Soap'
+                },
+                {
+                  id: 'zoe-events',
+                  title: 'Zoe Events',
+                  description: 'Luxury event planning and equipment rental for your special occasions.',
+                  highlight: 'Complete Event Solutions',
+                  benefits: ['Premium Rentals', 'Decoration', 'Coordination'],
+                  cta: 'Book Equipment'
+                },
+                {
+                  id: 'zoe-beauty',
+                  title: 'Zoe Beauty',
+                  description: 'Handcrafted jewelry and luxury hair accessories to enhance your elegance.',
+                  highlight: 'Handmade with Love',
+                  benefits: ['Unique Designs', 'Premium Quality', 'Custom Orders'],
+                  cta: 'Buy Jewelry'
+                },
+                {
+                  id: 'fashion',
+                  title: 'Modern Fashion',
+                  description: 'Handmade fashion items and accessories tailored for the modern African woman.',
+                  highlight: 'Authentic Craftsmanship',
+                  benefits: ['Cultural Heritage', 'Modern Style', 'Exclusive'],
+                  cta: 'Shop Now'
+                }
+              ]
+            },
+            gallery: { title: 'Brand Showcase' },
+            contact: {
+              title: 'Get In Touch',
+              email: 'elisiane.pokam@email.com',
+              whatsapp: 'WhatsApp Me',
+              form: { name: 'Full Name', email: 'Email Address', message: 'Your Message', submit: 'Send Message' }
+            },
+            footer: {
+              message: 'Empowering communities through quality service and inspiring leadership.',
+              rights: 'All Rights Reserved.'
+            },
+            orderForm: {
+              title: 'Order Details',
+              nameLabel: 'Your Name',
+              productLabel: 'Product/Service',
+              quantityLabel: 'Quantity/Details',
+              locationLabel: 'Delivery Location',
+              submitLabel: 'Send to WhatsApp',
+              cancelLabel: 'Cancel'
+            }
+          },
+          fr: {
+            nav: {
+              home: 'Accueil',
+              about: 'À Propos',
+              book: 'Mon Livre',
+              cv: 'Profil',
+              services: 'Services',
+              gallery: 'Galerie',
+              contact: 'Contact'
+            },
+            hero: {
+              name: 'Elisiane Pokam',
+              tagline: 'Transformer des vies par le leadership, le conseil et des services de qualité',
+              subtext: 'Entrepreneure multi-services proposant des produits d\'entretien, des services événementiels et des articles de mode faits main.',
+              cta: 'Contactez-moi sur WhatsApp'
+            },
+            about: {
+              title: 'Inspirer le Changement via le Leadership et le Service',
+              story: 'Animée par la passion de créer des solutions, je suis une entrepreneure dévouée à l\'excellence. Mon parcours repose sur les piliers du leadership, de l\'intégrité et du désir profond d\'aider les autres à grandir tout en offrant des produits et services de haute qualité.',
+              values: {
+                title: 'Mes Valeurs Fondamentales',
+                items: [
+                  { title: 'Excellence', desc: 'Engagée à ne livrer que le meilleur dans chaque entreprise.' },
+                  { title: 'Leadership', desc: 'Dédiée à l\'autonomisation des individus et à la croissance des équipes.' },
+                  { title: 'Intégrité', desc: 'Opérer avec transparence et honneur dans toutes les affaires.' },
+                  { title: 'Service', desc: 'Créer un impact significatif grâce à un service dévoué aux clients.' }
+                ]
+              }
+            },
+            book: {
+              title: "L'Attitude dans l'attente",
+              subtitle: "Le Pouvoir de votre État d'Esprit pendant l'Attente",
+              description: "Une exploration profonde de la façon dont notre perspective et notre état interne pendant les périodes d'attente peuvent définir notre succès futur.",
+              author: "Elisiane Pokam",
+              price: "2500 FCFA",
+              cta: 'Acheter sur WhatsApp'
+            },
+            cv: {
+              title: 'Profil Professionnel',
+              summary: 'Entrepreneure dynamique multi-sectorielle et spécialiste en leadership avec plus de dix ans d\'expérience en gestion d\'entreprise.',
+              skills: ['Leadership', 'Event Planning', 'Production Chimique', 'Prise de Parole', 'Gestion Financière'],
+              education: [
+                { period: '2015 - 2017', degree: 'Master en Gestion de Projets', school: 'Université de Yaoundé' },
+                { period: '2011 - 2014', degree: 'Licence en Économie', school: 'Université de Douala' }
+              ],
+              experience: [
+                {
+                  period: '2018 - Présent',
+                  role: 'CEO & Fondatrice',
+                  company: 'Zoe Brands Cameroun',
+                  desc: ['Gestion de plusieurs unités : Zoe Clean, Zoe Events, et Zoe Beauty.', 'Direction d\'une équipe de plus de 15 employés.']
+                },
+                {
+                  period: '2020 - Présent',
+                  role: 'Autrice & Conférencière',
+                  company: 'Marque Personnelle',
+                  desc: ['Publication de "L\'Attitude dans l\'attente".', 'Animation d\'ateliers de leadership pour jeunes entrepreneurs.']
+                }
+              ]
+            },
+            services: {
+              title: 'Mes Activités',
+              categories: [
+                {
+                  id: 'zoe-clean',
+                  title: 'Zoe Clean',
+                  description: 'Savon liquide premium et solutions de nettoyage pour ménages et usage industriel.',
+                  highlight: 'Formule Haute Concentration',
+                  benefits: ['Nettoyage Efficace', 'Économique', 'Éco-responsable'],
+                  cta: 'Commander'
+                },
+                {
+                  id: 'zoe-events',
+                  title: 'Zoe Events',
+                  description: 'Planification d\'événements de luxe et location de matériel pour vos occasions.',
+                  highlight: 'Solutions Événementielles Complètes',
+                  benefits: ['Location Premium', 'Décoration', 'Coordination'],
+                  cta: 'Louer Matériel'
+                },
+                {
+                  id: 'zoe-beauty',
+                  title: 'Zoe Beauty',
+                  description: 'Bijoux faits main et accessoires de cheveux de luxe pour votre élégance.',
+                  highlight: 'Fait Main avec Amour',
+                  benefits: ['Designs Uniques', 'Qualité Premium', 'Commandes Personnalisées'],
+                  cta: 'Acheter Bijoux'
+                },
+                {
+                  id: 'fashion',
+                  title: 'Mode Moderne',
+                  description: 'Articles de mode et accessoires faits main pour la femme africaine moderne.',
+                  highlight: 'Artisanat Authentique',
+                  benefits: ['Héritage Culturel', 'Style Moderne', 'Exclusivité'],
+                  cta: 'Boutique'
+                }
+              ]
+            },
+            gallery: { title: 'Vitrine de la Marque' },
+            contact: {
+              title: 'Contactez-moi',
+              email: 'elisiane.pokam@email.com',
+              whatsapp: 'Discuter sur WhatsApp',
+              form: { name: 'Nom Complet', email: 'Adresse Email', message: 'Votre Message', submit: 'Envoyer' }
+            },
+            footer: {
+              message: 'Autonomiser les communautés par un service de qualité et un leadership inspirant.',
+              rights: 'Tous Droits Réservés.'
+            },
+            orderForm: {
+              title: 'Détails de la Commande',
+              nameLabel: 'Votre Nom',
+              productLabel: 'Produit/Service',
+              quantityLabel: 'Quantité/Détails',
+              locationLabel: 'Lieu de Livraison',
+              submitLabel: 'Envoyer sur WhatsApp',
+              cancelLabel: 'Annuler'
+            }
+          }
+        };
+
+        // Components
+        const Icon = ({ name, className }) => {
+            const containerRef = useRef(null);
+
+            useEffect(() => {
+                if (window.lucide && containerRef.current) {
+                    window.lucide.createIcons({
+                        icons: { [name]: true },
+                        attrs: { class: className },
+                        nameAttr: 'data-lucide',
+                    });
+                }
+            }, [name, className]);
+
+            if (!window.lucide) return <span className={className}>•</span>;
+
+            return <span ref={containerRef} data-lucide={name.toLowerCase()}></span>;
+        };
+
+        const OrderModal = ({ isOpen, onClose, productTitle, lang, t }) => {
+          const [orderDetails, setOrderDetails] = useState({
+            name: '',
+            quantity: '',
+            location: '',
+          });
+
+          const liquidSoapOptions = [
+            { label: '1L', price: '1000 FCFA' },
+            { label: '3L', price: '3000 FCFA' },
+            { label: '5L', price: '4500 FCFA' },
+          ];
+
+          const handleWhatsAppOrder = () => {
+            const message = encodeURIComponent(
+              `${t.orderForm.title}\n\n` +
+              `${t.orderForm.nameLabel}: ${orderDetails.name}\n` +
+              `${t.orderForm.productLabel}: ${productTitle}\n` +
+              `${t.orderForm.quantityLabel}: ${orderDetails.quantity}\n` +
+              `${t.orderForm.locationLabel}: ${orderDetails.location}`
+            );
+            window.open(`${CONFIG.WHATSAPP_LINK}?text=${message}`, '_blank');
+            onClose();
+          };
+
+          if (!isOpen) return null;
+
+          return (
+            <AnimatePresence>
+              <div className="fixed inset-0 z-[100] flex items-center justify-center p-6">
+                <motion.div 
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  onClick={onClose}
+                  className="absolute inset-0 bg-primary-dark/60 backdrop-blur-sm"
+                />
+                <motion.div 
+                  initial={{ scale: 0.9, opacity: 0, y: 20 }}
+                  animate={{ scale: 1, opacity: 1, y: 0 }}
+                  exit={{ scale: 0.9, opacity: 0, y: 20 }}
+                  className="relative bg-white w-full max-w-md rounded-3xl p-8 shadow-2xl overflow-hidden"
+                >
+                  <div className="absolute top-0 left-0 w-full h-2 bg-gold"></div>
+                  <button onClick={onClose} className="absolute top-4 right-4 p-2 hover:bg-slate-100 rounded-full transition-colors">
+                    <Icon name="X" className="w-5 h-5 text-slate-400" />
+                  </button>
+                  
+                  <h3 className="text-2xl font-serif font-bold text-primary-dark mb-2">{t.orderForm.title}</h3>
+                  <p className="text-sm text-gold font-bold mb-8 uppercase tracking-wider">{productTitle}</p>
+
+                  <div className="space-y-6 text-left">
+                    <div>
+                      <label className="block text-xs font-bold text-slate-500 mb-2 uppercase tracking-widest">{t.orderForm.nameLabel}</label>
+                      <input 
+                        type="text" 
+                        value={orderDetails.name}
+                        onChange={(e) => setOrderDetails({ ...orderDetails, name: e.target.value })}
+                        className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all bg-slate-50 text-slate-800" 
+                        placeholder="Ex: Jean Dupont"
+                      />
+                    </div>
+
+                    {(productTitle.includes('Soap') || productTitle.includes('Savon') || productTitle.includes('Zoe Clean')) ? (
+                      <div>
+                        <label className="block text-xs font-bold text-slate-500 mb-2 uppercase tracking-widest">{t.orderForm.quantityLabel}</label>
+                        <div className="grid grid-cols-3 gap-3">
+                          {liquidSoapOptions.map((opt) => (
+                            <button
+                              key={opt.label}
+                              onClick={() => setOrderDetails({ ...orderDetails, quantity: `${opt.label} (${opt.price})` })}
+                              className={`py-3 px-2 rounded-xl text-xs font-bold border transition-all ${orderDetails.quantity.includes(opt.label) ? 'bg-primary text-white border-primary shadow-lg shadow-primary/20' : 'bg-white text-slate-600 border-slate-200 hover:border-primary/40'}`}
+                            >
+                              {opt.label}<br/><span className="font-normal opacity-70">{opt.price}</span>
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+                    ) : (
+                      <div>
+                        <label className="block text-xs font-bold text-slate-500 mb-2 uppercase tracking-widest">{t.orderForm.quantityLabel}</label>
+                        <input 
+                          type="text" 
+                          value={orderDetails.quantity}
+                          onChange={(e) => setOrderDetails({ ...orderDetails, quantity: e.target.value })}
+                          className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all bg-slate-50 text-slate-800" 
+                          placeholder={productTitle.includes('L\'Attitude') ? "Ex: 1 exemplaire" : "Ex: 10 assiettes, location..."}
+                        />
+                      </div>
+                    )}
+
+                    <div>
+                      <label className="block text-xs font-bold text-slate-500 mb-2 uppercase tracking-widest">{t.orderForm.locationLabel}</label>
+                      <input 
+                        type="text" 
+                        value={orderDetails.location}
+                        onChange={(e) => setOrderDetails({ ...orderDetails, location: e.target.value })}
+                        className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all bg-slate-50 text-slate-800" 
+                        placeholder="Ex: Bastos, Yaoundé"
+                      />
+                    </div>
+
+                    <div className="pt-4 flex flex-col space-y-3">
+                      <button 
+                        onClick={handleWhatsAppOrder}
+                        disabled={!orderDetails.name || !orderDetails.quantity || !orderDetails.location}
+                        className="w-full bg-primary text-white font-bold py-4 rounded-xl hover:bg-primary-dark transition-all flex items-center justify-center space-x-2 disabled:opacity-50 disabled:cursor-not-allowed shadow-xl shadow-primary/20"
+                      >
+                        <Icon name="Phone" className="w-5 h-5" />
+                        <span>{t.orderForm.submitLabel}</span>
+                      </button>
+                      <button onClick={onClose} className="w-full text-slate-400 font-bold py-3 text-sm hover:text-slate-600 transition-colors">
+                        {t.orderForm.cancelLabel}
+                      </button>
+                    </div>
+                  </div>
+                </motion.div>
+              </div>
+            </AnimatePresence>
+          );
+        };
+
+        const App = () => {
+          const [lang, setLang] = useState('en');
+          const [isMenuOpen, setIsMenuOpen] = useState(false);
+          const [scrolled, setScrolled] = useState(false);
+          const [isOrderModalOpen, setIsOrderModalOpen] = useState(false);
+          const [selectedProduct, setSelectedProduct] = useState('');
+
+          const t = contentData[lang];
+
+          useEffect(() => {
+            const handleScroll = () => setScrolled(window.scrollY > 50);
+            window.addEventListener('scroll', handleScroll);
+            return () => window.removeEventListener('scroll', handleScroll);
+          }, []);
+
+          const toggleLang = () => setLang(prev => (prev === 'en' ? 'fr' : 'en'));
+
+          const navLinks = [
+            { name: t.nav.home, href: '#home' },
+            { name: t.nav.about, href: '#about' },
+            { name: t.nav.book, href: '#book' },
+            { name: t.nav.services, href: '#services' },
+            { name: t.nav.gallery, href: '#gallery' },
+            { name: t.nav.contact, href: '#contact' },
+          ];
+
+          const openOrderModal = (title) => {
+            setSelectedProduct(title);
+            setIsOrderModalOpen(true);
+          };
+
+          return (
+            <div className="min-h-screen">
+              <OrderModal 
+                isOpen={isOrderModalOpen} 
+                onClose={() => setIsOrderModalOpen(false)} 
+                productTitle={selectedProduct}
+                lang={lang}
+                t={t}
+              />
+
+              {/* Navigation */}
+              <nav className={`fixed w-full z-50 transition-all duration-300 ${scrolled ? 'glass-nav shadow-md py-4' : 'bg-transparent py-6'}`}>
+                <div className="max-w-7xl mx-auto px-6 flex justify-between items-center text-slate-800">
+                  <motion.div 
+                    initial={{ opacity: 0, x: -20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    className="font-serif text-2xl font-bold text-primary"
+                  >
+                    Elisiane <span className="text-gold">Pokam</span>
+                  </motion.div>
+
+                  <div className="hidden md:flex items-center space-x-8">
+                    {navLinks.map((link) => (
+                      <a 
+                        key={link.name} 
+                        href={link.href} 
+                        className={`text-sm font-semibold hover:text-gold transition-colors ${scrolled ? 'text-slate-700' : 'text-slate-800'}`}
+                      >
+                        {link.name}
+                      </a>
+                    ))}
+                    <button 
+                      onClick={toggleLang}
+                      className="flex items-center space-x-2 bg-primary/10 px-3 py-1.5 rounded-full hover:bg-primary/20 transition-all border border-primary/20"
+                    >
+                      <Icon name="Globe" className="w-4 h-4 text-primary" />
+                      <span className="text-xs font-bold text-primary uppercase">{lang === 'en' ? 'FR' : 'EN'}</span>
+                    </button>
+                  </div>
+
+                  <div className="md:hidden flex items-center space-x-4 text-primary">
+                    <button onClick={toggleLang} className="p-2 bg-primary/10 rounded-full">
+                      <Icon name="Globe" className="w-5 h-5" />
+                    </button>
+                    <button onClick={() => setIsMenuOpen(!isMenuOpen)} className="p-2">
+                      {isMenuOpen ? <Icon name="X" /> : <Icon name="Menu" />}
+                    </button>
+                  </div>
+                </div>
+
+                <AnimatePresence>
+                  {isMenuOpen && (
+                    <motion.div
+                      initial={{ height: 0, opacity: 0 }}
+                      animate={{ height: 'auto', opacity: 1 }}
+                      exit={{ height: 0, opacity: 0 }}
+                      className="md:hidden bg-white border-t overflow-hidden shadow-xl"
+                    >
+                      <div className="px-6 py-8 flex flex-col space-y-6 text-left">
+                        {navLinks.map((link) => (
+                          <a 
+                            key={link.name} 
+                            href={link.href} 
+                            onClick={() => setIsMenuOpen(false)}
+                            className="text-lg font-bold text-slate-800 border-b border-slate-50 pb-2"
+                          >
+                            {link.name}
+                          </a>
+                        ))}
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </nav>
+
+              {/* Hero Section */}
+              <section id="home" className="relative h-screen flex items-center overflow-hidden bg-slate-100">
+                <div className="absolute inset-0 z-0">
+                  <div className="absolute inset-0 bg-primary-dark/40 z-10"></div>
+                  <img 
+                    src={CONFIG.IMAGES.hero} 
+                    alt="Elisiane Pokam" 
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+                
+                <div className="relative z-20 max-w-7xl mx-auto px-6 w-full pt-20 text-left">
+                  <motion.div
+                    initial={{ opacity: 0, y: 30 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.8 }}
+                    className="max-w-3xl"
+                  >
+                    <motion.span 
+                      animate={{ opacity: 1 }}
+                      initial={{ opacity: 0 }}
+                      className="inline-block px-4 py-1.5 rounded-full bg-gold/20 text-gold border border-gold/30 text-xs font-bold uppercase tracking-widest mb-6"
+                    >
+                      Entrepreneur & Leader
+                    </motion.span>
+                    <h1 className="text-5xl md:text-7xl font-serif font-bold text-white leading-tight mb-6">
+                      {t.hero.name}
+                    </h1>
+                    <p className="text-xl md:text-2xl text-white/90 font-light mb-4 max-w-2xl">
+                      {t.hero.tagline}
+                    </p>
+                    <p className="text-lg text-white/70 mb-10 max-w-xl">
+                      {t.hero.subtext}
+                    </p>
+                    <div className="flex flex-col sm:flex-row gap-4">
+                      <a 
+                        href={CONFIG.WHATSAPP_LINK}
+                        target="_blank"
+                        className="inline-flex items-center justify-center space-x-3 bg-gold hover:bg-gold-hover text-white px-8 py-4 rounded-full font-bold transition-all transform hover:scale-105 shadow-xl shadow-gold/20"
+                      >
+                        <Icon name="Phone" className="w-5 h-5" />
+                        <span>{t.hero.cta}</span>
+                      </a>
+                      <a 
+                        href="#services"
+                        className="inline-flex items-center justify-center space-x-3 bg-white/10 hover:bg-white/20 backdrop-blur-md text-white border border-white/30 px-8 py-4 rounded-full font-bold transition-all"
+                      >
+                        <span>{t.nav.services}</span>
+                        <Icon name="ChevronRight" className="w-5 h-5" />
+                      </a>
+                    </div>
+                  </motion.div>
+                </div>
+              </section>
+
+              {/* About */}
+              <section id="about" className="py-24 bg-primary-light">
+                <div className="max-w-7xl mx-auto px-6">
+                  <div className="grid md:grid-cols-2 gap-16 items-center">
+                    <motion.div
+                      initial={{ opacity: 0, x: -50 }}
+                      whileInView={{ opacity: 1, x: 0 }}
+                      className="relative"
+                    >
+                      <div className="aspect-[4/5] rounded-2xl overflow-hidden shadow-2xl relative z-10 bg-slate-200">
+                        <img 
+                          src={CONFIG.IMAGES.about} 
+                          alt="Elisiane Pokam Profile" 
+                          className="w-full h-full object-cover"
+                        />
+                      </div>
+                      <div className="absolute -bottom-6 -right-6 w-full h-full border-4 border-gold rounded-2xl -z-0"></div>
+                    </motion.div>
+
+                    <motion.div
+                      initial={{ opacity: 0, x: 50 }}
+                      whileInView={{ opacity: 1, x: 0 }}
+                      className="text-left"
+                    >
+                      <h2 className="text-sm font-bold text-gold uppercase tracking-[0.3em] mb-4 uppercase">{t.nav.about}</h2>
+                      <h3 className="text-4xl md:text-5xl font-serif font-bold text-primary-dark mb-8 leading-tight">
+                        {t.about.title}
+                      </h3>
+                      <p className="text-lg text-slate-600 leading-relaxed mb-12">
+                        {t.about.story}
+                      </p>
+
+                      <div className="grid sm:grid-cols-2 gap-8 text-left">
+                        {t.about.values.items.map((item, index) => (
+                          <div key={index} className="flex space-x-4">
+                            <div className="flex-shrink-0 w-12 h-12 bg-white rounded-xl shadow-sm flex items-center justify-center">
+                              <Icon name="Star" className="w-6 h-6 text-gold" />
+                            </div>
+                            <div>
+                              <h4 className="font-bold text-primary-dark mb-1">{item.title}</h4>
+                              <p className="text-sm text-slate-500">{item.desc}</p>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </motion.div>
+                  </div>
+                </div>
+              </section>
+
+              {/* Book */}
+              <section id="book" className="py-24 bg-white overflow-hidden">
+                <div className="max-w-7xl mx-auto px-6 text-center lg:text-left">
+                  <div className="flex flex-col lg:flex-row items-center gap-16">
+                    <motion.div 
+                      initial={{ opacity: 0, scale: 0.9 }}
+                      whileInView={{ opacity: 1, scale: 1 }}
+                      className="lg:w-1/2 flex justify-center perspective-[2000px]"
+                    >
+                      <div className="relative group cursor-pointer">
+                        <div className="relative z-10 w-[280px] md:w-[350px] aspect-[2/3] preserve-3d transition-transform duration-700 shadow-2xl rounded-r-lg overflow-hidden flex bg-slate-100">
+                          <img 
+                            src={CONFIG.IMAGES.book} 
+                            alt="Book Cover" 
+                            className="w-full h-full object-cover"
+                          />
+                          <div className="absolute inset-0 bg-gradient-to-r from-black/20 to-transparent"></div>
+                        </div>
+                        <div className="absolute -top-6 -right-6 bg-gold text-white px-6 py-3 rounded-2xl shadow-xl z-20 font-bold border-4 border-white transform rotate-12 flex items-center space-x-2">
+                          <Icon name="Tag" className="w-5 h-5" />
+                          <span>{t.book.price}</span>
+                        </div>
+                      </div>
+                    </motion.div>
+
+                    <div className="lg:w-1/2 text-left">
+                      <h2 className="text-sm font-bold text-gold uppercase tracking-[0.3em] mb-4 uppercase">{t.nav.book}</h2>
+                      <h3 className="text-4xl md:text-5xl font-serif font-bold text-primary-dark mb-4 leading-tight">
+                        {t.book.title}
+                      </h3>
+                      <p className="text-lg font-medium text-gold italic mb-8">{t.book.subtitle}</p>
+                      
+                      <p className="text-slate-600 leading-relaxed text-lg italic border-l-4 border-gold/20 pl-6 py-2 mb-10">
+                        {t.book.description}
+                      </p>
+
+                      <button 
+                        onClick={() => openOrderModal(t.book.title)}
+                        className="inline-flex items-center justify-center space-x-3 bg-primary text-white px-10 py-5 rounded-full font-bold transition-all hover:bg-primary-dark shadow-2xl shadow-primary/30"
+                      >
+                        <Icon name="Phone" className="w-5 h-5" />
+                        <span>{t.book.cta}</span>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </section>
+
+              {/* Services */}
+              <section id="services" className="py-24 bg-slate-50">
+                <div className="max-w-7xl mx-auto px-6">
+                  <div className="text-center mb-20 px-4">
+                    <h2 className="text-sm font-bold text-gold uppercase tracking-[0.3em] mb-4 uppercase">{t.nav.services}</h2>
+                    <h3 className="text-4xl font-serif font-bold text-primary-dark">{t.services.title}</h3>
+                  </div>
+
+                  <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-8">
+                    {t.services.categories.map((service) => {
+                      const serviceIcons = {
+                        'zoe-clean': 'GlassWater',
+                        'zoe-events': 'Calendar',
+                        'zoe-beauty': 'Gem',
+                        'fashion': 'ShoppingBag',
+                      };
+                      
+                      const serviceImages = {
+                        'zoe-clean': CONFIG.IMAGES.soap,
+                        'zoe-events': CONFIG.IMAGES.events,
+                        'zoe-beauty': CONFIG.IMAGES.beauty,
+                        'fashion': CONFIG.IMAGES.fashion,
+                      };
+
+                      return (
+                        <div
+                          key={service.id}
+                          className="bg-white rounded-2xl overflow-hidden shadow-lg border border-slate-100 flex flex-col h-full transform transition hover:-translate-y-2 text-left"
+                        >
+                          <div className="h-48 overflow-hidden relative">
+                            <img src={serviceImages[service.id]} className="w-full h-full object-cover" />
+                            <div className="absolute top-4 left-4 p-2 bg-white rounded-lg shadow-sm">
+                              <Icon name={serviceIcons[service.id]} className="w-6 h-6 text-primary" />
+                            </div>
+                          </div>
+                          <div className="p-6 flex flex-col flex-grow">
+                            <h4 className="text-xl font-bold text-primary-dark mb-2">{service.title}</h4>
+                            <p className="text-sm text-slate-500 mb-4 h-10 overflow-hidden">{service.description}</p>
+                            <div className="space-y-2 mb-8">
+                              {service.benefits.map((benefit, bIdx) => (
+                                <div key={bIdx} className="flex items-center space-x-2 text-xs font-medium text-slate-700">
+                                  <Icon name="CheckCircle2" className="w-3.5 h-3.5 text-gold" />
+                                  <span>{benefit}</span>
+                                </div>
+                              ))}
+                            </div>
+                            <button 
+                              onClick={() => openOrderModal(service.title)}
+                              className="mt-auto bg-primary hover:bg-primary-dark text-white text-sm font-bold py-3 px-4 rounded-xl transition-all flex items-center justify-center space-x-2 shadow-lg shadow-primary/20"
+                            >
+                              <Icon name="Phone" className="w-4 h-4" />
+                              <span>{service.cta}</span>
+                            </button>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              </section>
+
+              {/* Contact */}
+              <section id="contact" className="py-24 bg-primary text-white">
+                <div className="max-w-7xl mx-auto px-6">
+                  <div className="grid md:grid-cols-2 gap-16">
+                    <div className="text-left">
+                      <h2 className="text-sm font-bold text-gold uppercase tracking-[0.3em] mb-6">{t.contact.title}</h2>
+                      <h3 className="text-4xl font-serif font-bold mb-8 leading-tight">
+                        {lang === 'en' ? "Let's build something beautiful together." : "Construisons quelque chose de beau ensemble."}
+                      </h3>
+                      
+                      <div className="space-y-8">
+                        <div className="flex items-center space-x-6">
+                          <div className="w-14 h-14 bg-white/10 rounded-2xl flex items-center justify-center border border-white/10">
+                            <Icon name="Mail" className="w-6 h-6 text-gold" />
+                          </div>
+                          <div>
+                            <p className="text-xs font-bold text-white/50 uppercase tracking-wider mb-1">Email</p>
+                            <p className="text-xl font-medium">{t.contact.email}</p>
+                          </div>
+                        </div>
+
+                        <div className="flex items-center space-x-6">
+                          <div className="w-14 h-14 bg-white/10 rounded-2xl flex items-center justify-center border border-white/10">
+                            <Icon name="MapPin" className="w-6 h-6 text-gold" />
+                          </div>
+                          <div>
+                            <p className="text-xs font-bold text-white/50 uppercase tracking-wider mb-1">Location</p>
+                            <p className="text-xl font-medium">Yaoundé, Cameroun</p>
+                          </div>
+                        </div>
+
+                        <a 
+                          href={CONFIG.WHATSAPP_LINK}
+                          target="_blank"
+                          className="inline-flex items-center space-x-3 bg-gold hover:bg-gold-hover text-white px-8 py-4 rounded-full font-bold transition-all shadow-xl"
+                        >
+                          <Icon name="Phone" className="w-5 h-5" />
+                          <span>{t.contact.whatsapp}</span>
+                        </a>
+                      </div>
+                    </div>
+
+                    <div className="bg-white rounded-3xl p-8 shadow-2xl text-slate-800 text-left">
+                      <form className="space-y-6" onSubmit={(e) => e.preventDefault()}>
+                        <div>
+                          <label className="block text-sm font-bold text-slate-500 mb-2 uppercase tracking-wider">{t.contact.form.name}</label>
+                          <input type="text" className="w-full px-4 py-3 rounded-xl border border-slate-200" />
+                        </div>
+                        <div>
+                          <label className="block text-sm font-bold text-slate-500 mb-2 uppercase tracking-wider">{t.contact.form.email}</label>
+                          <input type="email" className="w-full px-4 py-3 rounded-xl border border-slate-200" />
+                        </div>
+                        <div>
+                          <label className="block text-sm font-bold text-slate-500 mb-2 uppercase tracking-wider">{t.contact.form.message}</label>
+                          <textarea rows="4" className="w-full px-4 py-3 rounded-xl border border-slate-200 resize-none"></textarea>
+                        </div>
+                        <button className="w-full bg-primary text-white font-bold py-4 rounded-xl hover:bg-primary-dark transition-all">
+                          {t.contact.form.submit}
+                        </button>
+                      </form>
+                    </div>
+                  </div>
+                </div>
+              </section>
+
+              {/* Footer */}
+              <footer className="py-12 bg-primary-dark text-white flex flex-col items-center px-6">
+                <div className="font-serif text-2xl font-bold mb-4">
+                  Elisiane <span className="text-gold">Pokam</span>
+                </div>
+                <p className="text-white/60 text-sm mb-8 max-w-sm text-center">{t.footer.message}</p>
+                <div className="text-white/40 text-[10px] text-center border-t border-white/5 pt-8 w-full max-w-7xl">
+                  © {new Date().getFullYear()} {t.hero.name}. {t.footer.rights}
+                </div>
+              </footer>
+            </div>
+          );
+        }
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+</body>
+</html>
